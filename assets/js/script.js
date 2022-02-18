@@ -12,13 +12,7 @@ var hours = [
 
 // Create time Block
 var createTimeBlock = function() {
-    for (let i = 0; i < hours.length; i++) {
-        var timeBlock = $("<div>").addClass("time-block");
-        var timeP = $("<p>").text(hours[i].time);
-        $(".container").append(timeBlock);
-        $(".time-block").append(timeP);
-        
-    }
+    
 };
 
 createTimeBlock();
