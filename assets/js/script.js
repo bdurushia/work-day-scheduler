@@ -35,13 +35,12 @@ const createTimeBlock = function() {
         .addClass('container-fluid');
         
         let saveIcon = $('<i>')
-        .addClass('fas fa-floppy-disk');
-
-        let spanEl = $('<span>');
+        .addClass('fas fa-save');
 
         let saveBtnLi = $('<li>')
         .addClass('list-group-item saveBtn')
-        .append($('<button type=button">').append(spanEl.append(saveIcon)));
+        .append(saveIcon)
+        .append($('<button type=button">'));
         
         blockContainer
             .append(ulEl
@@ -53,32 +52,22 @@ const createTimeBlock = function() {
 };
 
 const checkHour = function() {
-    // let currentHour = moment().format("hh");
-    // let amPm = moment().format("a");
-
-    let currentHour = '02';
-    let amPm = 'pm';
-
-    let currentTime = currentHour + amPm;
+    // let now = moment().format('hA');
     
-    $.each(hours, function(i, time) {
+    let now = moment('2:15pm', 'hA');
+    
+    $.each(hours, function(i) {
         let hourAttr = hours[i].time[1];
         let timeBlock = $('#' + hourAttr);
 
-        let timeTextArr = $('.' + hourAttr).text().split('');
-        let textAmPm = timeTextArr[5] + timeTextArr[6];
-        let textHour = timeTextArr[0] + timeTextArr[1];
-        let textTime = textHour + textAmPm;
+        let blockHour = moment(hours[i].time[0], 'hA');
 
-        if (textTime === currentTime) {
+        if (now.hour() === blockHour.hour()) {
             timeBlock.addClass('present');
-        }
-        else if (textAmPm === amPm) {
-            if (textHour > currentHour) {
-                timeBlock.addClass('future');
-            } else if ('10' < currentHour < '13') {
-                timeBlock.addClass('past');
-            }
+        } else if (now.isBefore(blockHour)) {
+            timeBlock.addClass('future');
+        } else if (now.isAfter(blockHour)) {
+            timeBlock.addClass('past');
         }
     });
 };
