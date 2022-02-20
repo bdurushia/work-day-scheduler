@@ -53,26 +53,33 @@ const createTimeBlock = function() {
 };
 
 const checkHour = function() {
-    let currentHour = moment().format("hh");
-    let amPm = moment().format("a");
+    // let currentHour = moment().format("hh");
+    // let amPm = moment().format("a");
+
+    let currentHour = '02';
+    let amPm = 'pm';
+
+    let currentTime = currentHour + amPm;
     
     $.each(hours, function(i, time) {
         let hourAttr = hours[i].time[1];
         let timeBlock = $('#' + hourAttr);
+
         let timeTextArr = $('.' + hourAttr).text().split('');
         let textAmPm = timeTextArr[5] + timeTextArr[6];
         let textHour = timeTextArr[0] + timeTextArr[1];
+        let textTime = textHour + textAmPm;
 
-        if (textHour <= currentHour && textAmPm !== amPm) {
-            // example 09 <= 12 && am !== pm
-            // example 01 <= 11 && pm !== am
-            timeBlock.addClass('past');
-        } else if (textHour === currentHour) {
+        if (textTime === currentTime) {
             timeBlock.addClass('present');
-        } else {
-            timeBlock.addClass('future');
         }
-        
+        else if (textAmPm === amPm) {
+            if (textHour > currentHour) {
+                timeBlock.addClass('future');
+            } else if ('10' < currentHour < '13') {
+                timeBlock.addClass('past');
+            }
+        }
     });
 };
 
