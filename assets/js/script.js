@@ -1,30 +1,26 @@
-let eventItems = {
-    event: []
+let tasks = {
+    "9am": [],
+    "10am": [],
+    "11am": [],
+    "12pm": [],
+    "1pm": [],
+    "2pm": [],
+    "3pm": [],
+    "4pm": [],
+    "5pm": []
 };
 
 const hours = [
-    {time: ["09:00am", "nine-am"]},
-    {time: ["10:00am", "ten-am"]},
-    {time: ["11:00am", "eleven-am"]},
-    {time: ["12:00pm", "twelve-pm"]},
-    {time: ["01:00pm", "one-pm"]},
-    {time: ["02:00pm", "two-pm"]},
-    {time: ["03:00pm", "three-pm"]},
-    {time: ["04:00pm", "four-pm"]},
-    {time: ["05:00pm", "five-pm"]}
+    {time: ["09:00am", "9am"]},
+    {time: ["10:00am", "10am"]},
+    {time: ["11:00am", "11am"]},
+    {time: ["12:00pm", "12pm"]},
+    {time: ["01:00pm", "1pm"]},
+    {time: ["02:00pm", "2pm"]},
+    {time: ["03:00pm", "3pm"]},
+    {time: ["04:00pm", "4pm"]},
+    {time: ["05:00pm", "5pm"]}
 ];
-
-// const timeDataID = [
-//     {id: 'nine'},
-//     {id: 'ten'},
-//     {id: 'eleven'},
-//     {id: 'twelve'},
-//     {id: 'one'},
-//     {id: 'two'},
-//     {id: 'three'},
-//     {id: 'four'},
-//     {id: 'five'}
-// ];
 
 // Display Current Date using Moment.js
 const todaysDate = moment().format('MMMM Do, YYYY');
@@ -68,6 +64,7 @@ const createTimeBlock = function() {
     });
 };
 
+// check time of day and change timeBlock colors based on if it is in the past, present, or future
 const checkHour = function() {
     let now = moment();
     // let now = moment('2:15pm', 'hA');
@@ -87,39 +84,50 @@ const checkHour = function() {
     });
 };
 
-// const loadItems = function() {
-//     eventItems = JSON.parse(localStorage.getItem("eventItems"));
+// Display local storage items on page
+const loadItems = function() {
+    // Get items from LS
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+    
+    // If nothing in local storage, create new object to track
+    if (!tasks) {
+        tasks = {
+            "9am": [],
+            "10am": [],
+            "11am": [],
+            "12pm": [],
+            "1pm": [],
+            "2pm": [],
+            "3pm": [],
+            "4pm": [],
+            "5pm": []
+        };
+    }
 
-//     // if nothing in LS, create new object
-//     if (!eventItems) {
-//         eventItems = [];
-//     }
-// }
+    // Display on page
+    $("*[data-store]").each(function() {
+        let taskId = $(this).closest('.list-group-item').attr('id');
+        let text = tasks[taskId];
+        $(this).val(text);
+    });
+};
 
-// const saveItems = function() {
-//     $.each($('*[data-store]'), function() {
-//         console.log($(this).prev().val());
-//         localStorage.setItem("eventItems", $(this).prev().val());
-//     })
-// }
+// save tasks to local storage
+const saveItems = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
 
 createTimeBlock();
 checkHour();
+loadItems();
 
+// Event handler targeting value stored in <textarea data-store= > 
+$('.saveBtn').on('click', function() {
+    let itemId = $(this).closest('.list-group-item').attr('id');
+    let textInput = $('[data-store=' + itemId + ']').val();
+    let index = $('[data-store=' + itemId + ']').closest('.list-group-item').attr('id');
 
+    tasks[index].push(textInput);
 
-// $('*.saveBtn').on('click', function() {
-//     console.log($(this).prev().val());
-//     localStorage.setItem("eventItems", $(this).prev().val());
-// })
-
-
-// $(document).ready (function () {
-//     $("*[data-store]").each(function () {
-//       $(this).val(localStorage.getItem("item-" + $(this).attr("data-store")));
-//     });
-
-//     $("*[data-store]").on("keyup", function (itm) {
-//         localStorage.setItem ("item-" + $(this).attr("data-store"), $(this).val());
-//       })
-//   })
+    saveItems();
+});
